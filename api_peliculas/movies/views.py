@@ -31,3 +31,26 @@ class GeneroDetailView(APIView):
             return Response(serializador.data)
         except:
             raise Http404
+        
+    # EDITAR
+    def put(self, request, pk, format=None):
+        try:
+            genero = Genero.objects.get(pk=pk)
+        except Genero.DoesNotExist:
+            raise Http404
+
+        serializer = GeneroSerializer(genero, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    # ELIMINAR
+    def delete(self, request, pk, format=None):
+        try:
+            genero = Genero.objects.get(pk=pk)
+        except Genero.DoesNotExist:
+            raise Http404
+
+        genero.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
